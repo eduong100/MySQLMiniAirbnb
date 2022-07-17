@@ -8,22 +8,24 @@
   </head>
   <body>
     <h1>
-      Welcome to MiniAirbnb<%- rows ? " " + rows[0].first_name + "!" : "!" %>
+      Welcome to MiniAirbnb<% if(name) {%>
+      <span> <%- " " + name + ". You are currently logged in!" %> </span>
+      <% } %>
     </h1>
     <% if(!isLoggedIn) {%>
     <a href="/login">Login</a>
     <a href="/register">Register</a>
+    <p>Please login to see available rooms</p>
+    <% } else { %>
+    <a href="/createRoom">Host a Lodging</a>
+    <h2>Lodging List:</h2>
+    <% for (room of rooms) { %>
+    <p><%-room.name%> <a href="/rooms/<%-room.id%>">View Room</a></p>
     <% } %>
-    <p>
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tenetur
-      veritatis praesentium autem est ducimus. Assumenda eos enim veniam dolorum
-      nam nisi corrupti, numquam incidunt ipsum ratione! Fuga magni repudiandae
-      perferendis.
-    </p>
+
     <form action="/logout" method="POST">
-      <% if(isLoggedIn) {%>
       <button>Logout</button>
-      <% } %>
     </form>
+    <% } %>
   </body>
 </html>

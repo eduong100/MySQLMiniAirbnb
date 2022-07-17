@@ -1,7 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import mysql from "mysql";
 import path from "path";
 import session from "express-session";
 
@@ -12,15 +11,13 @@ import {
   postLogin,
   logout,
 } from "./controllers/auth.js";
-import { getCreateRoom } from "./controllers/rooms.js";
 import {
-  DB_CONFIG,
-  PORT,
-  __filename,
-  __dirname,
-  SECRET,
-  MAX_AGE,
-} from "./constants.js";
+  getCreateRoom,
+  postCreateRoom,
+  getHome,
+  getRoom,
+} from "./controllers/rooms.js";
+import { PORT, __filename, __dirname, SECRET, MAX_AGE } from "./constants.js";
 
 const app = express();
 
@@ -52,26 +49,10 @@ app.post("/login", postLogin);
 app.post("/logout", logout);
 
 app.get("/createRoom", getCreateRoom);
+app.post("/createRoom", postCreateRoom);
 
-app.get("/", (req, res) => {
-  let user_id = req.session.user_id;
-  if (!user_id) {
-    return res.render("home", { rows: null, isLoggedIn: false });
-  }
-  let mysqlConnection = mysql.createConnection(DB_CONFIG);
-  mysqlConnection.query(
-    `SELECT * FROM users WHERE id="${user_id}"`,
-    (error, rows) => {
-      if (error) throw error;
-
-      if (!error) {
-        console.log(rows);
-        mysqlConnection.end();
-        res.render("home", { rows, isLoggedIn: true });
-      }
-    }
-  );
-});
+app.get("/rooms/:id", getRoom);
+app.get("/", getHome);
 
 // ROUTES
 

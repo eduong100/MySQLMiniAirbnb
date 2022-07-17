@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Room</title>
+</head>
+<body>
+    <h1>Create Room</h1>
+    <form action="/createRoom" method="POST">
+        <% let params = ["total_occupancy", "total_beds", "total_bathrooms"] %>
+        <% for(let i = 0; i < params.length; i++) { let p = params[i]%>
+            <div>
+                <label for=<%-p%>>Enter <%-p.split("_").join(" ")%>:</label>
+                <input type="number" name=<%-p%> id=<%-p%> min=0 max=10 />
+            </div>
+        <% }%>
+        <% params = ["address", "summary", "name"] %>
+        <% for(let i = 0; i < params.length; i++) { let p = params[i]%>
+            <div>
+                <label for=<%-p%>>Enter <%-p.split("_").join(" ")%>:</label>
+                <textarea name=<%-p%> id=<%-p%> maxLength="255"/></textarea>
+            </div>
+        <% }%>
+      <button>Submit</button>
+    </form>
+    <a href="/"/>Home</a>
+</body>
+</html>
