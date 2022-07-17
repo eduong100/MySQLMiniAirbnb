@@ -20,9 +20,9 @@ export const postLogin = (req, res) => {
     return res.send(error_html);
   }
 
-  const passwordQuery = `SELECT id, hashed_password FROM users WHERE email="${email}"`;
+  const passwordQuery = `SELECT id, hashed_password FROM users WHERE email=?`; // Vulnerable
   let mysqlConnection = mysql.createConnection(DB_CONFIG);
-  mysqlConnection.query(passwordQuery, (error, rows) => {
+  mysqlConnection.query(passwordQuery, [email], (error, rows) => {
     if (error) throw error;
     if (rows.length === 0) return res.send(error_html);
     let hashed_password = rows[0]["hashed_password"];
@@ -48,12 +48,12 @@ export const postRegister = async (req, res) => {
   }
 
   const hashed_password = await bcrypt.hash(password, 5);
-  const emailQuery = `SELECT * FROM users WHERE email="${email}"`;
+  const emailQuery = `SELECT * FROM users WHERE email=?`; // NOT VULNERABLE
   const registerQuery = `INSERT INTO users(first_name, last_name, email, hashed_password)
-  VALUES("${first_name}", "${last_name}", "${email}", "${hashed_password}")`;
+  VALUES(?,?,?,?)`; // NOT VULNERABLE VALUES("${first_name}", "${last_name}", "${email}", "${hashed_password}")`;
 
   let mysqlConnection = mysql.createConnection(DB_CONFIG);
-  mysqlConnection.query(emailQuery, (error, rows) => {
+  mysqlConnection.query(emailQuery, [email], (error, rows) => {
     if (error) throw error;
     // If email taken...
     if (rows.length > 0) {
@@ -61,14 +61,18 @@ export const postRegister = async (req, res) => {
       return res.send(error_html);
     }
     // If email not taken, then hash password
-    mysqlConnection.query(registerQuery, (error, rows) => {
-      if (error) throw error;
+    mysqlConnection.query(
+      registerQuery,
+      [first_name, last_name, email, hashed_password],
+      (error, rows) => {
+        if (error) throw error;
 
-      mysqlConnection.end();
+        mysqlConnection.end();
 
-      req.session.user_id = rows.insertId;
-      return res.redirect("/");
-    });
+        req.session.user_id = rows.insertId;
+        return res.redirect("/");
+      }
+    );
   });
 };
 

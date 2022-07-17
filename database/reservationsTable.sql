@@ -5,3 +5,8 @@ CREATE TABLE reservations(
     room_id BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (id)
 );
+-- @BLOCK
+DESCRIBE reservations;
+-- @BLOCK
+"SELECT" *
+FROM reservations;

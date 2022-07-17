@@ -25,16 +25,19 @@ export const postCreateRoom = (req, res) => {
     name,
     owner_id)
   VALUES(
-      "${total_occupancy}",
-      "${total_beds}",
-      "${total_bathrooms}",
-      "${summary}",
-      "${address}",
-      "${name}",
-      "${req.session.user_id}"
-  )`;
+      ?,?,?,?,?,?,?
+  )`; // NO SQL INJECTION
+  let parameters = [
+    total_occupancy,
+    total_beds,
+    total_bathrooms,
+    summary,
+    address,
+    name,
+    req.session.user_id,
+  ];
   let mysqlConnection = mysql.createConnection(DB_CONFIG);
-  mysqlConnection.query(createRoomQuery, (error, rows) => {
+  mysqlConnection.query(createRoomQuery, parameters, (error, rows) => {
     if (error) throw error;
     mysqlConnection.end();
     res.redirect("/");
@@ -46,12 +49,12 @@ export const getHome = (req, res) => {
   if (!user_id) {
     return res.render("home", { name: null, isLoggedIn: false, rooms: null });
   }
-  let userQuery = `SELECT first_name FROM users WHERE id="${user_id}"`;
+  let userQuery = `SELECT first_name FROM users WHERE id=?`; // NOT VULNERABLE
   let roomsQuery = `SELECT name, id FROM rooms ORDER BY id DESC LIMIT 5`;
 
   let name;
   let mysqlConnection = mysql.createConnection(DB_CONFIG);
-  mysqlConnection.query(userQuery, (error, rows) => {
+  mysqlConnection.query(userQuery, [user_id], (error, rows) => {
     if (error) throw error;
 
     if (!error) {
@@ -71,7 +74,8 @@ export const getHome = (req, res) => {
 export const getRoom = (req, res) => {
   let { id } = req.params;
   let roomsQuery = `SELECT r.*, CONCAT(u.first_name," ",u.last_name) owner FROM rooms r 
-  INNER JOIN users u ON u.id=r.owner_id WHERE r.id=${id}`;
+  INNER JOIN users u ON u.id=r.owner_id WHERE r.id=?`;
+  // NOT VULNERABLE TO SQL INJECTION
 
   let user_id = req.session.user_id;
   if (!user_id) {
@@ -79,11 +83,16 @@ export const getRoom = (req, res) => {
   }
 
   let mysqlConnection = mysql.createConnection(DB_CONFIG);
-  mysqlConnection.query(roomsQuery, (error, rows) => {
+  // Parameterized query
+  mysqlConnection.query(roomsQuery, [id], (error, rows) => {
     if (error) throw error;
 
     if (!error) {
       mysqlConnection.end();
+      if (rows.length === 0)
+        return res.send(
+          "<h1>Bad Query Please Try Again</h1><a href='/'>Home</a>"
+        );
       return res.render("roomDetails", { room: rows[0] });
     }
   });
