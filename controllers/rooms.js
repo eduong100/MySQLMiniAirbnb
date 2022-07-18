@@ -39,7 +39,7 @@ export const postCreateRoom = (req, res) => {
   ];
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(createRoomQuery, parameters, (error, rows) => {
-    if (error) return res.send(MYSQL_ERROR);
+    if (error) return res.status(404).send(MYSQL_ERROR);
     mysqlConnection.end();
     res.redirect("/");
   });
@@ -51,17 +51,17 @@ export const getHome = (req, res) => {
     return res.render("home", { name: null, isLoggedIn: false, rooms: null });
   }
   let userQuery = `SELECT first_name FROM users WHERE id=?`; // NOT VULNERABLE
-  let roomsQuery = `SELECT name, id FROM rooms ORDER BY id DESC LIMIT 5`;
+  let roomsQuery = `SELECT name, id FROM rooms ORDER BY id DESC LIMIT 20`;
 
   let name;
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(userQuery, [user_id], (error, rows) => {
-    if (error) return res.send(MYSQL_ERROR);
+    if (error) return res.status(404).send(MYSQL_ERROR);
 
     if (!error) {
       name = rows[0].first_name;
       mysqlConnection.query(roomsQuery, (error, rows) => {
-        if (error) return res.send(MYSQL_ERROR);
+        if (error) return res.status(404).send(MYSQL_ERROR);
 
         if (!error) {
           mysqlConnection.end();
@@ -87,7 +87,7 @@ export const getRoom = (req, res) => {
   // Parameterized query
   // setTimeout(() => {}, )
   mysqlConnection.query(roomsQuery, [id], (error, rows) => {
-    if (error) return res.send(MYSQL_ERROR);
+    if (error) return res.status(404).send(MYSQL_ERROR);
 
     if (!error) {
       mysqlConnection.end();

@@ -19,6 +19,7 @@ import {
 } from "./controllers/rooms.js";
 import {
   getCreateReservation,
+  getReservations,
   postCreateReservation,
 } from "./controllers/reservations.js";
 import { PORT, __filename, __dirname, SECRET, MAX_AGE } from "./constants.js";
@@ -58,6 +59,7 @@ app.get("/rooms/:id", getRoom);
 
 app.get("/rooms/:id/createReservation", getCreateReservation);
 app.post("/rooms/:id/createReservation", postCreateReservation);
+app.get("/reservations", getReservations);
 app.get("/", getHome);
 
 // ROUTES

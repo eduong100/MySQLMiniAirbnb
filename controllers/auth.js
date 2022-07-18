@@ -25,12 +25,12 @@ export const postLogin = (req, res) => {
   const passwordQuery = `SELECT id, hashed_password FROM users WHERE email=?`; // Vulnerable
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(passwordQuery, [email], (error, rows) => {
-    if (error) return res.send(MYSQL_ERROR);
+    if (error) return res.status(404).send(MYSQL_ERROR);
     if (rows.length === 0) return res.send(error_html);
     let hashed_password = rows[0]["hashed_password"];
     mysqlConnection.end();
     bcrypt.compare(password, hashed_password, (error, status) => {
-      if (error) return res.send(MYSQL_ERROR);
+      if (error) return res.status(404).send(MYSQL_ERROR);
       if (status) {
         req.session.user_id = rows[0]["id"];
         return res.redirect("/");
@@ -56,7 +56,7 @@ export const postRegister = async (req, res) => {
 
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(emailQuery, [email], (error, rows) => {
-    if (error) return res.send(MYSQL_ERROR);
+    if (error) return res.status(404).send(MYSQL_ERROR);
     // If email taken...
     if (rows.length > 0) {
       mysqlConnection.end();
@@ -67,7 +67,7 @@ export const postRegister = async (req, res) => {
       registerQuery,
       [first_name, last_name, email, hashed_password],
       (error, rows) => {
-        if (error) return res.send(MYSQL_ERROR);
+        if (error) return res.status(404).send(MYSQL_ERROR);
 
         mysqlConnection.end();
 

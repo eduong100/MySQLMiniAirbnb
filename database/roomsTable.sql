@@ -22,4 +22,4 @@ FROM users u
 DROP TABLE rooms;
 -- @BLOCK
 DELETE FROM rooms
-WHERE id = 4;
+WHERE id = 64;

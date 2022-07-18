@@ -15,6 +15,6 @@ export const DB_CONFIG = {
   multipleStatements: true,
 };
 export const SECRET = process.env.SECRET;
-export const MAX_AGE = parseInt(process.env.MAX_AGE);
+export const MAX_AGE = 3600000;
 export const MYSQL_ERROR =
-  "<h1>An error has occured with the MySQL server please try again</h1>";
+  "<h1>ERROR 404: An error has occured with the MySQL server please try again</h1>";
