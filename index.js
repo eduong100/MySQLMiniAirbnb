@@ -17,6 +17,10 @@ import {
   getHome,
   getRoom,
 } from "./controllers/rooms.js";
+import {
+  getCreateReservation,
+  postCreateReservation,
+} from "./controllers/reservations.js";
 import { PORT, __filename, __dirname, SECRET, MAX_AGE } from "./constants.js";
 
 const app = express();
@@ -50,8 +54,10 @@ app.post("/logout", logout);
 
 app.get("/createRoom", getCreateRoom);
 app.post("/createRoom", postCreateRoom);
-
 app.get("/rooms/:id", getRoom);
+
+app.get("/rooms/:id/createReservation", getCreateReservation);
+app.post("/rooms/:id/createReservation", postCreateReservation);
 app.get("/", getHome);
 
 // ROUTES

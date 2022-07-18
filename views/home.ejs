@@ -15,9 +15,12 @@
     <% if(!isLoggedIn) {%>
     <a href="/login">Login</a>
     <a href="/register">Register</a>
-    <p>Please login to see available rooms</p>
+    <p>Please login to see available lodgings.</p>
     <% } else { %>
-    <a href="/createRoom">Host a Lodging</a>
+    <p><a href="/createRoom">Host a Lodging</a></p>
+    <form action="/logout" method="POST">
+      <button>Logout</button>
+    </form>
     <h2>Lodging List:</h2>
     <% for (room of rooms) { %>
     <p><%-room.name%> <a href="/rooms/<%-room.id%>">View Room</a></p>

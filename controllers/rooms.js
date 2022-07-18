@@ -1,5 +1,5 @@
 import mysql from "mysql";
-import { DB_CONFIG } from "../constants.js";
+import { DB_CONFIG, MYSQL_ERROR } from "../constants.js";
 
 export const getCreateRoom = (req, res) => {
   if (!req.session.user_id) return res.redirect("/");
@@ -7,6 +7,7 @@ export const getCreateRoom = (req, res) => {
 };
 
 export const postCreateRoom = (req, res) => {
+  console.log("CREATING ROOM");
   if (!req.session.user_id) return res.redirect("/");
   const {
     total_occupancy,
@@ -36,9 +37,9 @@ export const postCreateRoom = (req, res) => {
     name,
     req.session.user_id,
   ];
-  let mysqlConnection = mysql.createConnection(DB_CONFIG);
+  let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(createRoomQuery, parameters, (error, rows) => {
-    if (error) throw error;
+    if (error) return res.send(MYSQL_ERROR);
     mysqlConnection.end();
     res.redirect("/");
   });
@@ -53,14 +54,14 @@ export const getHome = (req, res) => {
   let roomsQuery = `SELECT name, id FROM rooms ORDER BY id DESC LIMIT 5`;
 
   let name;
-  let mysqlConnection = mysql.createConnection(DB_CONFIG);
+  let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(userQuery, [user_id], (error, rows) => {
-    if (error) throw error;
+    if (error) return res.send(MYSQL_ERROR);
 
     if (!error) {
       name = rows[0].first_name;
       mysqlConnection.query(roomsQuery, (error, rows) => {
-        if (error) throw error;
+        if (error) return res.send(MYSQL_ERROR);
 
         if (!error) {
           mysqlConnection.end();
@@ -82,10 +83,11 @@ export const getRoom = (req, res) => {
     return res.redirect("/");
   }
 
-  let mysqlConnection = mysql.createConnection(DB_CONFIG);
+  let mysqlConnection = mysql.createPool(DB_CONFIG);
   // Parameterized query
+  // setTimeout(() => {}, )
   mysqlConnection.query(roomsQuery, [id], (error, rows) => {
-    if (error) throw error;
+    if (error) return res.send(MYSQL_ERROR);
 
     if (!error) {
       mysqlConnection.end();
