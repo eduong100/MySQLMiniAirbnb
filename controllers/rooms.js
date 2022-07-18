@@ -56,7 +56,7 @@ export const getHome = (req, res) => {
   let name;
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(userQuery, [user_id], (error, rows) => {
-    if (error) return res.status(404).send(MYSQL_ERROR);
+    if (error || rows.length === 0) return res.status(404).send(MYSQL_ERROR);
 
     name = rows[0].first_name;
     mysqlConnection.query(roomsQuery, (error, rows) => {
