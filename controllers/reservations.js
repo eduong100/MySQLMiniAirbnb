@@ -36,10 +36,13 @@ export const postCreateReservation = (req, res) => {
   mysqlConnection.query(existenceQuery, [room_id], (error, rows) => {
     if (error) return res.status(404).send(MYSQL_ERROR);
 
-    if (rows.length !== 1)
+    if (rows.length !== 1) {
+      mysqlConnection.end();
       return res.send(
         "<h1>Cannot create reservation for room that doesn't exist</h1>"
       );
+    }
+
     mysqlConnection.query(
       reservationQuery,
       [date, user_id, room_id],
@@ -47,7 +50,7 @@ export const postCreateReservation = (req, res) => {
         if (error) return res.status(404).send(MYSQL_ERROR);
 
         mysqlConnection.end();
-        res.redirect("/");
+        res.redirect("/reservations");
       }
     );
   });
@@ -58,8 +61,7 @@ export const getReservations = (req, res) => {
   if (!user_id) {
     return res.redirect("/");
   }
-  let { id } = req.params;
-  let reservationsQuery = `SELECT room.name room_name, res.date date, room.id room_id 
+  let reservationsQuery = `SELECT room.name room_name, res.date date, res.id res_id, room.id room_id 
   FROM reservations res
   INNER JOIN rooms room ON room.id = res.room_id
   ORDER BY res.date ASC`;
@@ -69,4 +71,28 @@ export const getReservations = (req, res) => {
     mysqlConnection.end();
     res.render("reservations", { reservations: rows });
   });
+};
+
+export const deleteReservation = (req, res) => {
+  let user_id = req.session.user_id;
+  if (!user_id) {
+    return res.redirect("/");
+  }
+  let reservation_id = req.params.id;
+  let deleteQuery = `DELETE FROM reservations  
+  WHERE user_id = ? AND id = ?`;
+  let mysqlConnection = mysql.createPool(DB_CONFIG);
+  mysqlConnection.query(
+    deleteQuery,
+    [user_id, reservation_id],
+    (error, rows) => {
+      if (error) return res.status(404).send(MYSQL_ERROR);
+      mysqlConnection.end();
+      if (rows["affectedRows"] === 0)
+        return res.send(
+          `Cannot delete non-existent reservation or reservation does not belong to you`
+        );
+      res.redirect("/reservations");
+    }
+  );
 };

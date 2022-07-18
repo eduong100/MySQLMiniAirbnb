@@ -15,10 +15,6 @@ DESCRIBE rooms;
 SELECT *
 FROM rooms;
 -- @BLOCK
-SELECT u.id
-FROM users u
-    INNER JOIN rooms r ON owner_id = u.id;
--- @BLOCK
 DROP TABLE rooms;
 -- @BLOCK
 DELETE FROM rooms

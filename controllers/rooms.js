@@ -58,17 +58,13 @@ export const getHome = (req, res) => {
   mysqlConnection.query(userQuery, [user_id], (error, rows) => {
     if (error) return res.status(404).send(MYSQL_ERROR);
 
-    if (!error) {
-      name = rows[0].first_name;
-      mysqlConnection.query(roomsQuery, (error, rows) => {
-        if (error) return res.status(404).send(MYSQL_ERROR);
+    name = rows[0].first_name;
+    mysqlConnection.query(roomsQuery, (error, rows) => {
+      if (error) return res.status(404).send(MYSQL_ERROR);
 
-        if (!error) {
-          mysqlConnection.end();
-          res.render("home", { name, isLoggedIn: true, rooms: rows });
-        }
-      });
-    }
+      mysqlConnection.end();
+      res.render("home", { name, isLoggedIn: true, rooms: rows });
+    });
   });
 };
 
@@ -89,13 +85,31 @@ export const getRoom = (req, res) => {
   mysqlConnection.query(roomsQuery, [id], (error, rows) => {
     if (error) return res.status(404).send(MYSQL_ERROR);
 
-    if (!error) {
-      mysqlConnection.end();
-      if (rows.length === 0)
-        return res.send(
-          "<h1>Bad Query Please Try Again</h1><a href='/'>Home</a>"
-        );
-      return res.render("roomDetails", { room: rows[0] });
-    }
+    mysqlConnection.end();
+    if (rows.length === 0)
+      return res.send(
+        "<h1>Bad Query Please Try Again</h1><a href='/'>Home</a>"
+      );
+    return res.render("roomDetails", { room: rows[0], user_id });
+  });
+};
+
+export const deleteRoom = (req, res) => {
+  let user_id = req.session.user_id;
+  if (!user_id) {
+    return res.redirect("/");
+  }
+  let room_id = req.params.id;
+  let deleteQuery = `DELETE FROM rooms  
+  WHERE owner_id = ? AND id = ?`;
+  let mysqlConnection = mysql.createPool(DB_CONFIG);
+  mysqlConnection.query(deleteQuery, [user_id, room_id], (error, rows) => {
+    if (error) return res.status(404).send(MYSQL_ERROR);
+    mysqlConnection.end();
+    if (rows["affectedRows"] === 0)
+      return res.send(
+        `Cannot delete non-existent room or room does not belong to you`
+      );
+    res.redirect("/");
   });
 };

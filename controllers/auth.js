@@ -26,9 +26,9 @@ export const postLogin = (req, res) => {
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(passwordQuery, [email], (error, rows) => {
     if (error) return res.status(404).send(MYSQL_ERROR);
+    mysqlConnection.end();
     if (rows.length === 0) return res.send(error_html);
     let hashed_password = rows[0]["hashed_password"];
-    mysqlConnection.end();
     bcrypt.compare(password, hashed_password, (error, status) => {
       if (error) return res.status(404).send(MYSQL_ERROR);
       if (status) {
@@ -50,9 +50,9 @@ export const postRegister = async (req, res) => {
   }
 
   const hashed_password = await bcrypt.hash(password, 5);
-  const emailQuery = `SELECT * FROM users WHERE email=?`; // NOT VULNERABLE
+  const emailQuery = `SELECT * FROM users WHERE email=?`;
   const registerQuery = `INSERT INTO users(first_name, last_name, email, hashed_password)
-  VALUES(?,?,?,?)`; // NOT VULNERABLE VALUES("${first_name}", "${last_name}", "${email}", "${hashed_password}")`;
+  VALUES(?,?,?,?)`;
 
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(emailQuery, [email], (error, rows) => {

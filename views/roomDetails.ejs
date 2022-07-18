@@ -14,7 +14,14 @@
             <%-item.split("_").map((el) => el.charAt(0).toUpperCase() + el.slice(1)).join(" ")%>: <%-room[item]%>
         </div>
     <% } } %>
-    <a href=<%-`/rooms/${room["id"]}/createReservation`%>>Make Reservation</a>
+    <% if(room.owner_id === user_id) {%>
+      <form action=<%-`/rooms/${room["id"]}?_method=DELETE`%> method="POST">
+        <button>DELETE ROOM</button>
+      </form>
+    <%} else {%>
+      <a href=<%-`/rooms/${room["id"]}/createReservation`%>>Make Reservation</a>
+    <%}%>
+    
     <a href="/"/>Home</a>
   </body>
 </html>
