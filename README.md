@@ -53,3 +53,10 @@ CREATE TABLE reservations(
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
 );
 ```
+
+<h2>Avoiding SQL Injection</h2>
+
+Initially, I made a huge mistake by including user input directly into template string SQL queries that would be sent directly to the the database. 
+I was aware of SQL injections before but did not realize how vulnerable my application to such an attack if I used this method. After researching some examples of SQL injection and learning some SQL best practices,
+I refactored the code so that SQL queries would be parameterized before being sent to the database. This way, the MySQL server can differentiate
+between user input and the actual query before executing the query sent.
