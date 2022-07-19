@@ -7,29 +7,7 @@
     <title>Home</title>
   </head>
   <body>
-    <h1>
-      Welcome to MiniAirbnb<% if(name) {%>
-      <span> <%- " " + name + ". You are currently logged in!" %> </span>
-      <% } %>
-    </h1>
-    <% if(!isLoggedIn) {%>
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
-    <p>Please login to see available lodgings.</p>
-    <% } else { %>
-    <p><a href="/createRoom">Host a Lodging</a></p>
-    <p><a href="/reservations">See your Reservations</a></p>
-    <form action="/logout" method="POST">
-      <button>Logout</button>
-    </form>
-    <h2>Lodging List:</h2>
-    <% for (room of rooms) { %>
-    <p><%-room.name%> <a href="/rooms/<%-room.id%>">View Room</a></p>
-    <% } %>
-
-    <form action="/logout" method="POST">
-      <button>Logout</button>
-    </form>
-    <% } %>
+    <h1>Welcome to MiniAirbnb<%-bannerMessage%></h1>
+    <%- include(partial)%>
   </body>
 </html>

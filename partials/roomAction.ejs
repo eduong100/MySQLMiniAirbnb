@@ -1,0 +1,7 @@
+<% if(room.owner_id === user_id) { %>
+    <form action=<%-`/rooms/${room["id"]}?_method=DELETE`%> method="POST">
+      <button>DELETE ROOM</button>
+    </form>
+<% } else { %>
+    <a href=<%-`/rooms/${room["id"]}/createReservation`%>>Make Reservation</a>
+<% } %>

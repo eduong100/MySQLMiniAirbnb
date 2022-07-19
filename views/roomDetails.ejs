@@ -8,20 +8,8 @@
   </head>
   <body>
     <h1><%-room["name"]%> details:</h1>
-    <% for(item in room) { %>
-        <%if(!item.includes("id")) {%>
-        <div>
-            <%-item.split("_").map((el) => el.charAt(0).toUpperCase() + el.slice(1)).join(" ")%>: <%-room[item]%>
-        </div>
-    <% } } %>
-    <% if(room.owner_id === user_id) {%>
-      <form action=<%-`/rooms/${room["id"]}?_method=DELETE`%> method="POST">
-        <button>DELETE ROOM</button>
-      </form>
-    <%} else {%>
-      <a href=<%-`/rooms/${room["id"]}/createReservation`%>>Make Reservation</a>
-    <%}%>
-    
+    <%- include("../partials/displayRoomDetails") %>
+    <%- include("../partials/roomAction") %>
     <a href="/"/>Home</a>
   </body>
 </html>
