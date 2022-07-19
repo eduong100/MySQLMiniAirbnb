@@ -60,3 +60,7 @@ Initially, I made a huge mistake by including user input directly into template 
 I was aware of SQL injections before but did not realize how vulnerable my application to such an attack if I used this method. After researching some examples of SQL injection and learning some SQL best practices,
 I refactored the code so that SQL queries would be parameterized before being sent to the database. This way, the MySQL server can differentiate
 between user input and the actual query before executing the query sent.
+
+<h2>Server Routes</h2>
+
+![ROUTES](./routes.PNG)
