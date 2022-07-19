@@ -3,11 +3,12 @@ import { DB_CONFIG, MYSQL_ERROR } from "../constants.js";
 
 export const getCreateRoom = (req, res) => {
   if (!req.session.user_id) return res.redirect("/");
-  res.render("createRoom");
+  let numParams = ["total_occupancy", "total_beds", "total_bathrooms"];
+  let textParams = ["address", "summary", "name"];
+  res.render("createRoom", { numParams, textParams });
 };
 
 export const postCreateRoom = (req, res) => {
-  console.log("CREATING ROOM");
   if (!req.session.user_id) return res.redirect("/");
   const {
     total_occupancy,
@@ -47,23 +48,32 @@ export const postCreateRoom = (req, res) => {
 
 export const getHome = (req, res) => {
   let user_id = req.session.user_id;
+  let bannerMessage = "!";
   if (!user_id) {
-    return res.render("home", { name: null, isLoggedIn: false, rooms: null });
+    return res.render("home", {
+      bannerMessage,
+      partial: "../partials/homeNotLoggedIn",
+      rooms: null,
+    });
   }
   let userQuery = `SELECT first_name FROM users WHERE id=?`; // NOT VULNERABLE
   let roomsQuery = `SELECT name, id FROM rooms ORDER BY id DESC LIMIT 20`;
 
-  let name;
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(userQuery, [user_id], (error, rows) => {
     if (error || rows.length === 0) return res.status(404).send(MYSQL_ERROR);
 
-    name = rows[0].first_name;
+    let name = rows[0].first_name;
+    bannerMessage = ` ${name}! You are currently logged in!`;
     mysqlConnection.query(roomsQuery, (error, rows) => {
       if (error) return res.status(404).send(MYSQL_ERROR);
 
       mysqlConnection.end();
-      res.render("home", { name, isLoggedIn: true, rooms: rows });
+      res.render("home", {
+        bannerMessage,
+        partial: "../partials/homeIsLoggedIn",
+        rooms: rows,
+      });
     });
   });
 };

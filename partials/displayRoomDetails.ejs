@@ -1,0 +1,6 @@
+<% for(item in room) { if(!item.includes("id")) { %>
+<div>
+  <%-item.split("_").map((el) => el.charAt(0).toUpperCase() +
+  el.slice(1)).join(" ")%>: <%-room[item]%>
+</div>
+<% } } %>

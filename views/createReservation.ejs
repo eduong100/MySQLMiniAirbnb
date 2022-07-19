@@ -9,8 +9,10 @@
   <body>
     <h1>Select Time for Reservation:</h1>
     <form action=<%-`/rooms/${id}/createReservation`%> method="POST">
+        <!-- Input for date with min and max -->
         <label for="date">Date of reservation:</label>
         <input type="date" name="date" id="date" min=<%-`${currentDate}`%> max=<%-maxDate%>>
+      
         <button>Submit</button>
     </form> 
     <a href=<%-`/rooms/${id}`%>>Lodging Details</a>

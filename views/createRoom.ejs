@@ -9,15 +9,15 @@
 <body>
     <h1>Create Room</h1>
     <form action="/createRoom" method="POST">
-        <% let params = ["total_occupancy", "total_beds", "total_bathrooms"] %>
-        <% for(let i = 0; i < params.length; i++) { let p = params[i]%>
+        <!-- Inputs for numbers (total_occupancy, etc.) -->
+        <% for(let p of numParams) { %>
             <div>
                 <label for=<%-p%>>Enter <%-p.split("_").join(" ")%>:</label>
                 <input type="number" name=<%-p%> id=<%-p%> min=0 max=10 />
             </div>
         <% }%>
-        <% params = ["address", "summary", "name"] %>
-        <% for(let i = 0; i < params.length; i++) { let p = params[i]%>
+        <!-- Inputs for text (name, summary, etc.) -->
+        <% for(let p of textParams) { %>
             <div>
                 <label for=<%-p%>>Enter <%-p.split("_").join(" ")%>:</label>
                 <textarea name=<%-p%> id=<%-p%> maxLength="50"/></textarea>
