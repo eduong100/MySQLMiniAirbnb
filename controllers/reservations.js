@@ -64,9 +64,10 @@ export const getReservations = (req, res) => {
   let reservationsQuery = `SELECT room.name room_name, res.date date, res.id res_id, room.id room_id 
   FROM reservations res
   INNER JOIN rooms room ON room.id = res.room_id
+  WHERE res.user_id = ?
   ORDER BY res.date ASC`;
   let mysqlConnection = mysql.createPool(DB_CONFIG);
-  mysqlConnection.query(reservationsQuery, (error, rows) => {
+  mysqlConnection.query(reservationsQuery, [user_id], (error, rows) => {
     if (error) return res.status(404).send(MYSQL_ERROR);
     mysqlConnection.end();
     res.render("reservations", { reservations: rows });

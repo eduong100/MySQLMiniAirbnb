@@ -1,0 +1,13 @@
+<p><a href="/rooms/new">Host a Lodging</a></p>
+<p><a href="/reservations">See your Reservations</a></p>
+<form action="/logout" method="POST">
+  <button>Logout</button>
+</form>
+<h2>Lodging List:</h2>
+<% for (room of rooms) { %>
+<p><%-room.name%> <a href="/rooms/<%-room.id%>">View Room</a></p>
+<% } %>
+
+<form action="/logout" method="POST">
+  <button>Logout</button>
+</form>

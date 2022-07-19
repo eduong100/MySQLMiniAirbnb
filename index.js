@@ -57,8 +57,8 @@ app.get("/login", getLogin);
 app.post("/login", postLogin);
 app.post("/logout", logout);
 
-app.get("/createRoom", getCreateRoom);
-app.post("/createRoom", postCreateRoom);
+app.get("/rooms/new", getCreateRoom);
+app.post("/rooms/new", postCreateRoom);
 app.get("/rooms/:id", getRoom);
 app.delete("/rooms/:id", deleteRoom);
 

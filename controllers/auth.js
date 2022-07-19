@@ -22,7 +22,7 @@ export const postLogin = (req, res) => {
     return res.send(error_html);
   }
 
-  const passwordQuery = `SELECT id, hashed_password FROM users WHERE email=?`; // Vulnerable
+  const passwordQuery = `SELECT id, hashed_password FROM users WHERE email=?`;
   let mysqlConnection = mysql.createPool(DB_CONFIG);
   mysqlConnection.query(passwordQuery, [email], (error, rows) => {
     if (error) return res.status(404).send(MYSQL_ERROR);
