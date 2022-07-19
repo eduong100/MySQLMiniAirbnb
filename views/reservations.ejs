@@ -9,15 +9,15 @@
   <body>
     <h1>Your Reservations:</h1>
     <% if(reservations.length === 0) { %>
-    <p>You have no reservations currently.</p>
+      <p>You have no reservations currently.</p>
     <% } else { for (res of reservations) {%>
-    <p>
-      <form action=<%-`/reservations/${res.res_id}?_method=DELETE`%> method="POST">
-        <a href=<%-`/rooms/${res.room_id}`%>><%-res.room_name%></a>:
-        <%-`${res.date.getMonth()+1}-${res.date.getDate()}-${res.date.getFullYear()}`%>
-        <button>DELETE RESERVATION</button>
-      </form>
-    </p>
+      <p>
+        <form action=<%-`/reservations/${res.res_id}?_method=DELETE`%> method="POST">
+          <a href=<%-`/rooms/${res.room_id}`%>><%-res.room_name%></a>:
+          <%-`${res.date.getMonth()+1}-${res.date.getDate()}-${res.date.getFullYear()}`%>
+          <button>DELETE RESERVATION</button>
+        </form>
+      </p>
     <% } }%>
     <a href="/">Home</a>
   </body>

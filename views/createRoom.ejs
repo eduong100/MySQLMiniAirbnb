@@ -20,7 +20,7 @@
         <% for(let i = 0; i < params.length; i++) { let p = params[i]%>
             <div>
                 <label for=<%-p%>>Enter <%-p.split("_").join(" ")%>:</label>
-                <textarea name=<%-p%> id=<%-p%> maxLength="255"/></textarea>
+                <textarea name=<%-p%> id=<%-p%> maxLength="50"/></textarea>
             </div>
         <% }%>
       <button>Submit</button>
